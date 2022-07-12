@@ -60,7 +60,7 @@ const Header = ({
 					flex={1}
 					alignItems="center"
 					display="flex"
-					justifyContent={isEmpty(walletAddress) ? "center" : "flex-start"}
+					justifyContent={isEmpty(userProvider) ? "center" : "flex-start"}
 				>
 					<Pane
 						border
@@ -74,89 +74,87 @@ const Header = ({
 					</Pane>
 					<Heading size={600}>Usher</Heading>
 				</Pane>
-				{!isEmpty(walletAddress) && (
-					<Pane>
-						{!isEmpty(userProvider) && (
-							<Popover
-								position={Position.BOTTOM_LEFT}
-								content={
-									<Menu>
-										{userProvider === "email" && (
-											<Menu.Item pointerEvents="none">{username}</Menu.Item>
-										)}
-										<Menu.Item icon={LogOutIcon} onClick={signOutHandler}>
-											Disconnect
-										</Menu.Item>
-									</Menu>
-								}
-							>
-								<Button
-									marginRight={16}
-									height={majorScale(5)}
-									borderRadius={40}
-									iconBefore={
-										userProvider === "discord" ? (
-											<Image src={DiscordIcon} width={20} height={20} />
-										) : (
-											<UserIcon size={24} />
-										)
-									}
-									iconAfter={ChevronDownIcon}
-									isLoading={isLoading}
-								>
-									{!isEmpty(avatarUrl) && (
-										<Avatar
-											src={avatarUrl}
-											size={30}
-											name={username}
-											marginRight={8}
-										/>
+				<Pane>
+					{!isEmpty(userProvider) && (
+						<Popover
+							position={Position.BOTTOM_LEFT}
+							content={
+								<Menu>
+									{userProvider === "email" && (
+										<Menu.Item pointerEvents="none">{username}</Menu.Item>
 									)}
-									<strong>
-										{userProvider === "email" ? `Account` : username}
-									</strong>
-								</Button>
-							</Popover>
-						)}
-						{!isEmpty(walletAddress) && (
-							<Popover
-								position={Position.BOTTOM_LEFT}
-								content={
-									<Menu>
-										<Menu.Item
-											icon={LogOutIcon}
-											onClick={(e) => {
-												setLoading(true);
-												disconnect(e).finally(() => setLoading(false));
-											}}
-										>
-											Disconnect
-										</Menu.Item>
-									</Menu>
+									<Menu.Item icon={LogOutIcon} onClick={signOutHandler}>
+										Disconnect
+									</Menu.Item>
+								</Menu>
+							}
+						>
+							<Button
+								marginRight={16}
+								height={majorScale(5)}
+								borderRadius={40}
+								iconBefore={
+									userProvider === "discord" ? (
+										<Image src={DiscordIcon} width={20} height={20} />
+									) : (
+										<UserIcon size={24} />
+									)
 								}
+								iconAfter={ChevronDownIcon}
+								isLoading={isLoading}
 							>
-								<Button
-									appearance="primary"
-									height={majorScale(5)}
-									borderRadius={40}
-									iconBefore={
-										<Image src={ArConnectIcon} width={25} height={25} />
-									}
-									iconAfter={ChevronDownIcon}
-									isLoading={isLoading}
-								>
-									<strong>
-										Wallet{" "}
-										{walletAddress.substring(
-											walletAddress.length - 4,
-											walletAddress.length
-										)}
-									</strong>
-								</Button>
-							</Popover>
-						)}
-					</Pane>
-				)}
+								{!isEmpty(avatarUrl) && (
+									<Avatar
+										src={avatarUrl}
+										size={30}
+										name={username}
+										marginRight={8}
+									/>
+								)}
+								<strong>
+									{userProvider === "email" ? `Account` : username}
+								</strong>
+							</Button>
+						</Popover>
+					)}
+					{!isEmpty(walletAddress) && (
+						<Popover
+							position={Position.BOTTOM_LEFT}
+							content={
+								<Menu>
+									<Menu.Item
+										icon={LogOutIcon}
+										onClick={(e) => {
+											setLoading(true);
+											disconnect(e).finally(() => setLoading(false));
+										}}
+									>
+										Disconnect
+									</Menu.Item>
+								</Menu>
+							}
+						>
+							<Button
+								appearance="primary"
+								height={majorScale(5)}
+								borderRadius={40}
+								iconBefore={
+									<Image src={ArConnectIcon} width={25} height={25} />
+								}
+								iconAfter={ChevronDownIcon}
+								isLoading={isLoading}
+							>
+								<strong>
+									Wallet{" "}
+									{walletAddress.substring(
+										walletAddress.length - 4,
+										walletAddress.length
+									)}
+								</strong>
+							</Button>
+						</Popover>
+					)}
+				</Pane>
 			</Pane>
 		</Pane>
 	);

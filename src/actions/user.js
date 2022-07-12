@@ -10,5 +10,5 @@ export const authorise = async ({ email }) => {
 		.json();
 	console.log(response);
 
-	return response.success;
+	return response;
 };

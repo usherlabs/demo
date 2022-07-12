@@ -12,8 +12,8 @@ import {
 // import PropTypes from "prop-types";
 
 import { useUser } from "@/hooks/";
-import handleException from "@/utils/handle-exception";
 import * as alerts from "@/utils/alerts";
+import handleException from "@/utils/handle-exception";
 
 const EmailConnectScreen = () => {
 	const [, isLoading, { signIn }] = useUser();
@@ -27,28 +27,24 @@ const EmailConnectScreen = () => {
 		}
 		setDisabled(true);
 		// Connect with Email
-		const { error } = await signIn({
-			email: value
-		});
-		setTimeout(() => {
-			setDisabled(false);
-		}, 5000);
-		if (error) {
-			if (error.status === 429) {
-				toaster.notify(
-					"An email with a Magic Link has already been sent to you!",
-					{ id: "magic-link-sent", duration: 10 }
-				);
-				return;
+		try {
+			const { success, data } = await signIn({
+				email: value
+			});
+			setTimeout(() => {
+				setDisabled(false);
+			}, 5000);
+			if (!success) {
+				throw new Error("auth unsuccessful");
 			}
-			handleException(error);
+			toaster.success("Signing you in...");
+			setTimeout(() => {
+				window.location.href = data.link;
+			}, 1000);
+		} catch (e) {
 			alerts.error();
-			return;
+			handleException(e);
 		}
-		toaster.success(
-			"An email with a Magic Link has been sent to you. Click the link in the email to Sign In.",
-			{ duration: 10 }
-		);
 	}, [value]);
 
 	return (

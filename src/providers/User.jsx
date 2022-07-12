@@ -6,12 +6,16 @@ import React, {
 	useCallback
 } from "react";
 import isEmpty from "lodash/isEmpty";
+import once from "lodash/once";
 
 import { ChildrenProps } from "@/utils/common-prop-types";
 import { supabase } from "@/utils/supabase-client";
 import useAuthStateChange from "@/hooks/use-auth-state-change";
 import { authorise } from "@/actions/user";
 import delay from "@/utils/delay";
+import { saveInviteLink } from "@/actions/invite";
+
+const saveInviteLinkOnce = once(saveInviteLink);
 
 export const UserContext = createContext();
 
@@ -29,8 +33,13 @@ const UserContextProvider = ({ children }) => {
 		if (!isEmpty(u)) {
 			if (u.role === "authenticated") {
 				// Here we fetch user verifications
-				setUser(u);
-				return u;
+				const [{ id: linkId }, conversions] = await saveInviteLinkOnce(u.id);
+				const newUser = {
+					...u,
+					link: { id: linkId, conversions }
+				};
+				setUser(newUser);
+				return newUser;
 			}
 		}
 		return {};

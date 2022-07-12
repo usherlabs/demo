@@ -4,13 +4,13 @@ import { supabase } from "@/utils/supabase-client";
 import { advertiser } from "@/env-config";
 import { request } from "@/utils/browser-request";
 
-export const saveInviteLink = async (walletId) => {
+export const saveInviteLink = async (userId) => {
 	// Check if there is a wallet associated to this user.
 	// If not, insert it, otherwise check if user_id has been updated
 	const sSel = await supabase
 		.from("invite_links")
 		.select(`id`)
-		.match({ wallet_id: walletId, active: true })
+		.match({ user_id: userId, active: true })
 		.order("created_at", { ascending: false });
 	if (sSel.error && sSel.status !== 406) {
 		throw sSel.error;
@@ -21,7 +21,7 @@ export const saveInviteLink = async (walletId) => {
 
 	if (isEmpty(data)) {
 		const sIns = await supabase.from("invite_links").insert({
-			wallet_id: walletId,
+			user_id: userId,
 			destination_url: advertiser.destinationUrl
 		});
 		console.log("invite_links: insert", sIns);
