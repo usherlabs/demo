@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
 	Pane,
 	Heading,
@@ -6,9 +6,11 @@ import {
 	Tooltip,
 	HelpIcon,
 	useTheme,
-	Alert
+	Alert,
+	toaster
 } from "evergreen-ui";
 import { css } from "@linaria/core";
+import { useRouter } from "next/router";
 
 import { useUser, useContract } from "@/hooks/";
 import { MAX_SCREEN_WIDTH, TABLET_BREAKPOINT } from "@/constants";
@@ -18,6 +20,7 @@ import ClaimButton from "@/components/ClaimButton";
 import Terms from "@/components/Terms";
 import Progress from "@/components/Progress";
 import getInviteLink from "@/utils/get-invite-link";
+import VerifyPersonhoodAlert from "@/components/VerifyPersonhoodAlert";
 
 const DashboardScreen = () => {
 	const { colors } = useTheme();
@@ -30,10 +33,26 @@ const DashboardScreen = () => {
 		isContractLoading
 	] = useContract();
 	const [user] = useUser();
+	const router = useRouter();
 	const { id: linkId, conversions = { total: 0, pending: 0, success: 0 } } =
 		user?.link || {};
 	const inviteLink = linkId ? getInviteLink(linkId) : "";
 	const claimableRewards = rate * conversions.pending;
+	const { verifications = {} } = user;
+
+	useEffect(() => {
+		if (router.query.verify === "complete") {
+			toaster.success(`Successfully verified your personhood!`, {
+				duration: 20,
+				id: "verify"
+			});
+		} else if (router.query.verify === "failure") {
+			toaster.danger(
+				`Failied to verify your personhood. Please refresh and try again.`,
+				{ duration: 20, id: "verify" }
+			);
+		}
+	}, []);
 
 	// "Users converted by the Advertiser that are pending for processing."
 	const ConvHelpIcon = (content) =>
@@ -194,18 +213,7 @@ const DashboardScreen = () => {
 						</Pane>
 					</Pane>
 					<Pane marginBottom={12}>
-						<Tooltip
-							content="This feature is still in development."
-							statelessProps={{
-								minWidth: 280
-							}}
-						>
-							<Alert intent="warning" title="Unlock Claims">
-								<Paragraph>
-									Verify your personhood to unlock the ability to submit claims.
-								</Paragraph>
-							</Alert>
-						</Tooltip>
+						{!verifications.personhood && <VerifyPersonhoodAlert />}
 					</Pane>
 					<Pane marginBottom={12}>
 						<Terms />

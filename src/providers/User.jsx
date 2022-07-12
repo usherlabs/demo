@@ -16,6 +16,24 @@ import delay from "@/utils/delay";
 import { saveInviteLink } from "@/actions/invite";
 
 const saveInviteLinkOnce = once(saveInviteLink);
+const getPersonhoodOnce = once(async (userId) => {
+	const sSel = await supabase
+		.from("personhood_entries")
+		.select(`id, created_at`)
+		.match({ user_id: userId })
+		.order("created_at", { ascending: false });
+	if (sSel.error && sSel.status !== 406) {
+		throw sSel.error;
+	}
+	console.log("personhood_entries: select", sSel);
+
+	const results = sSel.data;
+	let ph = false;
+	if (results.length > 0) {
+		ph = results[0].created_at;
+	}
+	return ph;
+});
 
 export const UserContext = createContext();
 
@@ -33,10 +51,14 @@ const UserContextProvider = ({ children }) => {
 		if (!isEmpty(u)) {
 			if (u.role === "authenticated") {
 				// Here we fetch user verifications
+				const ph = await getPersonhoodOnce(u.id);
 				const [{ id: linkId }, conversions] = await saveInviteLinkOnce(u.id);
 				const newUser = {
 					...u,
-					link: { id: linkId, conversions }
+					link: { id: linkId, conversions },
+					verifications: {
+						personhood: ph
+					}
 				};
 				setUser(newUser);
 				return newUser;

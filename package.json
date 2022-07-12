@@ -11,6 +11,7 @@
 		"clean": "del .next out"
 	},
 	"dependencies": {
+		"@iconscout/react-unicons": "^1.1.6",
 		"@jsdevtools/ono": "^7.1.3",
 		"@linaria/core": "^3.0.0-beta.15",
 		"@linaria/react": "^3.0.0-beta.15",
@@ -25,6 +26,7 @@
 		"framebus": "^5.1.2",
 		"got": "^12.0.3",
 		"js-base64": "^3.7.2",
+		"jwt-decode": "^3.1.2",
 		"ky": "^0.30.0",
 		"lodash": "^4.17.21",
 		"modern-normalize": "^1.1.0",
@@ -32,9 +34,12 @@
 		"next-connect": "^0.12.1",
 		"next-seo": "^5.1.0",
 		"nookies": "^2.5.2",
+		"openid-client": "^5.1.8",
 		"prop-types": "^15.8.1",
+		"qrcode.react": "^3.1.0",
 		"react": "17.0.2",
 		"react-copy-to-clipboard": "^5.0.4",
+		"react-device-detect": "^2.2.2",
 		"react-dom": "17.0.2",
 		"sass": "^1.49.7",
 		"url-join": "^5.0.0",
